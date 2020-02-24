@@ -3,6 +3,6 @@
 Have [Nix](https://nixos.org/nix) installed then run.
 
 ```
-$ assembler/run hello-world
-$ assembler/run fibs
+$ ./run assembler fibs
+$ ./run fortran fibs
 ```

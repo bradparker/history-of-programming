@@ -1,24 +1,31 @@
+; Get program break
 mov rax, 0xc ; sys_brk
 mov rdi, 0   ; address = 0
 syscall
 
-mov rsi, rax ; copy current end of data segment to rsi
+; Copy current program break to rsi
+; It's the register sys_write refers to when looking for
+; the start of the buffer
+mov rsi, rax
 
-add rax, 0x2 ; add 2 to end of existing data segment / allocate 2 bytes of memory
+; Allocate 2 bytes of memory by moving program break
+add rax, 0x2 ; new offset
 mov rdi, rax ; address = rax
 mov rax, 0xc ; sys_brk
 syscall
 
-inc rsi              ; move rsi to next memory address
-mov BYTE [rsi], 0x0a ; put newline
-dec rsi              ; move back to beginning of 'buffer'
+; Always have a newline in second byte of buffer
+inc rsi
+mov BYTE [rsi], 0x0a
+dec rsi
 
 ; The first two fibs are special
 
 ; First fib
 mov rax, 0
 
-; Print current fib
+; Print
+
 ; Make int in rax a printable char
 add rax, 48
 ; Move lower byte of rax to address stored in rsi
@@ -29,38 +36,46 @@ mov rdi, 0x1 ; fd = stdout
 mov rdx, 0x2 ; length = 2
 syscall
 
-; Set next fib and away we go
+; Second fib
 mov rax, 1
 
-; First two state values
+; Print
+add rax, 48
+mov [rsi], al
+mov rax, 0x1 ; sys_write
+mov rdi, 0x1 ; fd = stdout
+mov rdx, 0x2 ; length = 2
+syscall
+
+; Previous two fibs, for iterating
 mov r8, 0
 mov r9, 1
 
-; Initialize counter
-; I can't use rcx as my counter because sys_write uses it as a counter
+; Counter
 mov r10, 0
 
-; Print current fib, calculate next one
 loop:
+  ; Calculate current fib from previous two
+  mov rax, r8
+  add rax, r9
+
+  ; Move the previous fib, include the current one
+  mov r8,  r9
+  mov r9,  rax
+
+  ; Print current fib
   add rax, 48
   mov [rsi], al
-
   mov rax, 0x1 ; sys_write
   mov rdi, 0x1 ; fd = stdout
   mov rdx, 0x2 ; length = 2
   syscall
 
-  ; Calculate next fib
-  mov rax, r8
-  add rax, r9
-  mov r8,  r9
-  mov r9,  rax
-
   ; Increment counter
   inc r10
   ; Compare counter
-  cmp r10, 6
-  ; Loop if counter less than six
+  cmp r10, 5
+  ; Loop if counter less than five
   jl loop
 
 ; Free memory

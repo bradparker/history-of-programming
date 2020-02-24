@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-EXAMPLE=$1
-CURRENT_DIR=$(dirname "${BASH_SOURCE[0]}")
-
-$(nix-build ${CURRENT_DIR} --no-out-link -A ${EXAMPLE})/bin/${EXAMPLE}

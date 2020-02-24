@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+LANGUAGE=$1
+EXAMPLE=$2
+
+$(nix-build ${LANGUAGE} --no-out-link -A ${EXAMPLE})/bin/${EXAMPLE}
