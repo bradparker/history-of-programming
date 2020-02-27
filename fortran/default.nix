@@ -8,7 +8,7 @@
     ];
     buildPhase = ''
       set -e
-      gfortran ${name}.F90 -o ${name}
+      gfortran ${name}.F -o ${name}
     '';
     installPhase = ''
       set -e
