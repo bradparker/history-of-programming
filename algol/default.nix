@@ -1,7 +1,7 @@
 { nixpkgs ? import <nixpkgs> {} }:
 rec {
-  hello-world = nixpkgs.stdenv.mkDerivation rec {
-    name = "hello-world";
+  algol-program = name: nixpkgs.stdenv.mkDerivation {
+    name = name;
     src = ./.;
     installPhase = ''
       mkdir -p $out/{bin,lib}
@@ -11,6 +11,11 @@ rec {
       chmod +x $out/bin/${name}
     '';
   };
+
+  fibs = algol-program "fibs";
+
+  hello-world = algol-program "hello-world";
+
   algol68g = nixpkgs.stdenv.mkDerivation {
     name = "algol68g";
     src = builtins.fetchTarball {
