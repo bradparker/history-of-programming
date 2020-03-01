@@ -1,21 +1,9 @@
 { nixpkgs ? import <nixpkgs> {} }:
 {
-  algol68toc = nixpkgs.stdenv.mkDerivation rec {
-    name = "algol68toc";
+  algol68g = nixpkgs.stdenv.mkDerivation {
+    name = "algol68g";
     src = builtins.fetchTarball {
-      url = http://www.nunan.myzen.co.uk/algol68/algol68toc_1.15.tar.gz;
+      url = https://jmvdveer.home.xs4all.nl/algol68g-2.8.4.tar.gz;
     };
-    buildInputs = with nixpkgs; [
-      coreutils
-      gnumake
-      gnused
-      which
-    ];
-    patches = [
-      ./patchfile.patch
-    ];
-    installPhase = ''
-      PREFIX=$out make install
-    '';
   };
 }
